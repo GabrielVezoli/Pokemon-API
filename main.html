@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Pokemon</title>
+</head>
+<body>
+    <main class="container">
+        <form action="" class="search">
+          <input type="search" class="search-input" placeholder="Procure seu Pokémon usando o nome ou o número da Pokedex.">
+          <button class="search-button">Buscar</button>
+        </form>
+    
+        <section class="pokemon">
+        </section>
+        <span class="error">Nada encontrado!</span>
+      </main>
+
+    <script>
+        const baseUrl = 'https://pokeapi.co/api/v2/pokemon/';
+
+        // Get Elements --------------------------------------------
+        const searchInput = getElement('.search-input'),
+            searchButton = getElement('.search-button'),
+            container = getElement('.pokemon'),
+            erroMessage = getElement('.error');
+
+        var pokeName, // Nome ou numero passado na caixa de busca
+            pokemon; // Responsavel por guardar os dados recebidos da API 
+
+        // Função para reduzir a escrita na captura de elementos HTML
+        function getElement(element) {
+        return document.querySelector(element);
+        }
+
+        // Função responsavel por fazer requisições para a API e inserir as respostas na variavel pokemon
+        function requestPokeInfo(url, name) {
+        fetch(url + name)
+            .then(response => response.json())
+            .then(data => {
+            pokemon = data;
+            })
+            .catch(err => console.log(err));
+        }
+
+        function startApp(pokeName) {
+            requestPokeInfo(baseUrl, pokeName);
+        }
+
+        function addHTML() {
+            cardHTML = `<div> <h1 class="infos">Info: <br> ${JSON.stringify(pokemon)} </h1> </div>`;
+            return cardHTML;
+        }
+
+        searchButton.addEventListener('click', event => {
+            event.preventDefault();
+            pokeName = searchInput.value.toLowerCase();
+            startApp(pokeName);
+            setTimeout(function () {
+                container.innerHTML = addHTML();
+            }, 2000);
+        });
+    </script>    
+</body>
+</html>
